@@ -1,9 +1,11 @@
 var groove = require('groove');
 var assert = require('assert');
 var Batch  = require('batch'); // npm install batch
+var batch = new Batch();
 var app    = require('express')();
 var http   = require('http').Server(app);
 var io     = require('socket.io')(http);
+_          = require('underscore');
 
 //if the user didn't at least enter one file, then they need to be informed.
 if (process.argv.length !== 3) usage();
@@ -43,13 +45,12 @@ io.on('connection', function(socket){
 });
 http.listen(3000, function(){
   console.log('listening on *:3000');
-});
 
-//the batch library simply allows for the execusion of multiple tasks in parallel
-var batch = new Batch();
-//add a new task for each file that was passed
-for (var i=2 ; i<process.argv.length ; i+=1) {
-  batch.push(openFileFn(process.argv[i]));
+http.listen(process.argv[2], function(){
+  console.log('listening on *:' + process.argv[2]);
+});
+//end main program flow
+
 }
 //this is the function that is the task that get's executed in parallel
 //basically we're opening all the files in parallel
