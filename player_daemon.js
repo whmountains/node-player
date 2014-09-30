@@ -43,12 +43,15 @@ io.on('connection', function(socket){
     console.log('play file called with path: "' + filePath + '"');
   });
 });
-
 http.listen(3000, function(){
+  console.log('listening on *:3000');
+
+http.listen(process.argv[2], function(){
   console.log('listening on *:' + process.argv[2]);
 });
 //end main program flow
 
+}
 //this is the function that is the task that get's executed in parallel
 //basically we're opening all the files in parallel
 function openFileFn(filename) {
