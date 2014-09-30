@@ -1,11 +1,12 @@
-/* play several files in a row and then exit */
-
 var groove = require('groove');
 var assert = require('assert');
-var Batch = require('batch'); // npm install batch
+var Batch  = require('batch'); // npm install batch
+var app    = require('express')();
+var http   = require('http').Server(app);
+var io     = require('socket.io')(http);
 
-//if the user didn't at least enter one file, then they don't know what they're doing.
-if (process.argv.length < 3) usage();
+//if the user didn't at least enter one file, then they need to be informed.
+if (process.argv.length !== 3) usage();
 
 //init the groove playlist and groove player
 var playlist = groove.createPlaylist();
@@ -13,20 +14,35 @@ var player = groove.createPlayer();
 
 //attach an event that fires when the now playing state changes
 player.on('nowplaying', function() {
-
   //current is an object pointing to the file unless nothing is playing
   var current = player.position();
-
   //cleanup if nothing is playing
   if (!current.item) {
     cleanup();
     return;
   }
-
   //log the just changed now playing state
   var artist = current.item.file.getMetadata('artist');
   var title = current.item.file.getMetadata('title');
   console.log("Now playing:", artist, "-", title);
+});
+
+//do this whenever a user connects
+io.on('connection', function(socket){
+  //log the new connection
+  console.log('a user connected');
+
+  //disconnect event handeler
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+
+  socket.on('play file', function(filePath) {
+    console.log('play file called with path: "' + filePath + '"');
+  });
+});
+http.listen(3000, function(){
+  console.log('listening on *:3000');
 });
 
 //the batch library simply allows for the execusion of multiple tasks in parallel
@@ -54,6 +70,14 @@ batch.end(function(err, files) {
   });
 });
 
+//function to stop playing
+function stop() {
+  player.detach(function(err){
+    console.dir(err);
+    cleanup();
+  });
+}
+
 //we do this when we're ready to exit
 function cleanup() {
   var batch = new Batch();
@@ -73,6 +97,6 @@ function cleanup() {
 
 //echo usage if the user doesn't know what they're doing
 function usage() {
-  console.error("Usage: playlist file1 file2 ...");
+  console.error("Usage: player_daemon.js <port>");
   process.exit(1);
 }
