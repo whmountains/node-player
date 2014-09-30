@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "underscore": "^1.7.0"
+    "mongojs": "^0.14.2",
+    "node-watch": "^0.3.4",
+    "underscore": "^1.7.0",
+    "walk": "^2.3.4",
+    "walk-fs": "0.0.2"
   }
 }

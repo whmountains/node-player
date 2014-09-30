@@ -41,6 +41,7 @@ io.on('connection', function(socket){
 
   socket.on('play file', function(filePath) {
     console.log('play file called with path: "' + filePath + '"');
+    play();
   });
 });
 http.listen(3000, function(){
@@ -48,10 +49,16 @@ http.listen(3000, function(){
 });
 
 //end main program flow
-
-for (var i = 2; i < process.argv.length; i += 1) {
-  batch.push(openFileFn(process.argv[i]));
+function play() {
+  for (var i = 2; i < process.argv.length; i += 1) {
+    batch.push(openFileFn(process.argv[i]));
+    console.dir(batch);
+  }
 }
+// for (var i = 2; i < process.argv.length; i += 1) {
+//   console.log(process.argv[i]);
+//   batch.push(openFileFn(process.argv[i]));
+// }
 
 //this is the function that is the task that get's executed in parallel
 //basically we're opening all the files in parallel
