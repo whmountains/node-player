@@ -29,10 +29,20 @@ player.on('nowplaying', function() {
   console.log("Now playing:", artist, "-", title);
 });
 
+//the batch library simply allows for the execusion of multiple tasks in parallel
 var batch = new Batch();
-for (var i = 2; i < process.argv.length; i += 1) {
+//add a new task for each file that was passed
+for (var i=2 ; i<process.argv.length ; i+=1) {
   batch.push(openFileFn(process.argv[i]));
 }
+//this is the function that is the task that get's executed in parallel
+//basically we're opening all the files in parallel
+function openFileFn(filename) {
+  return function(cb) {
+    groove.open(filename, cb);
+  };
+}
+//do this when all the tasks are finished
 batch.end(function(err, files) {
   files.forEach(function(file) {
     if (file) {
@@ -43,12 +53,8 @@ batch.end(function(err, files) {
     assert.ifError(err);
   });
 });
-function openFileFn(filename) {
-  return function(cb) {
-    groove.open(filename, cb);
-  };
-}
 
+//we do this when we're ready to exit
 function cleanup() {
   var batch = new Batch();
   var files = playlist.items().map(function(item) { return item.file; });
@@ -65,6 +71,7 @@ function cleanup() {
   });
 }
 
+//echo usage if the user doesn't know what they're doing
 function usage() {
   console.error("Usage: playlist file1 file2 ...");
   process.exit(1);
