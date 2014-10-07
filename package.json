@@ -1,5 +1,8 @@
 {
+  "name": "groove-player",
+  "private": true,
   "dependencies": {
+    "lodash": "^2.4.1",
     "mongojs": "^0.14.2",
     "node-watch": "^0.3.4",
     "underscore": "^1.7.0",

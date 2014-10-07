@@ -5,7 +5,7 @@ var batch = new Batch();
 var app    = require('express')();
 var http   = require('http').Server(app);
 var io     = require('socket.io')(http);
-_          = require('underscore');
+var _      = require('lodash');
 
 //if the user didn't at least enter one file, then they need to be informed.
 if (process.argv.length !== 3) usage();
@@ -48,11 +48,12 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-//end main program flow
-function play() {
-  for (var i = 2; i < process.argv.length; i += 1) {
+// // end main program flow // //
+
+function play(grooveObj) {
+  for (var i = 2 ; i < process.argv.length ; i += 1) {
     batch.push(openFileFn(process.argv[i]));
-    console.dir(batch);
+    console.log('pushing ' + process.argv[i] + ' to batch');
   }
 }
 // for (var i = 2; i < process.argv.length; i += 1) {
@@ -64,6 +65,8 @@ function play() {
 //basically we're opening all the files in parallel
 function openFileFn(filename) {
   return function(cb) {
+    console.log('opening ' + filename);
+    console.log('cb = ' + cb);
     groove.open(filename, cb);
   };
 }
@@ -71,6 +74,7 @@ function openFileFn(filename) {
 batch.end(function(err, files) {
   files.forEach(function(file) {
     if (file) {
+      console.log('adding ' + file + ' to playlist');
       playlist.insert(file);
     }
   });
