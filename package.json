@@ -2,7 +2,9 @@
   "name": "groove-player",
   "private": true,
   "dependencies": {
+    "agenda": "^0.6.19",
     "lodash": "^2.4.1",
+    "moment": "^2.8.3",
     "mongojs": "^0.14.2",
     "node-watch": "^0.3.4",
     "underscore": "^1.7.0",

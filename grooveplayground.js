@@ -1,6 +1,4 @@
 var groove = require('groove');
-//var _      = require('lodash');
-var assert = require('assert');
 
 var playlist = groove.createPlaylist();
 var player = groove.createPlayer();
