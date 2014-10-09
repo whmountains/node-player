@@ -13,7 +13,7 @@ player.on('nowplaying', function() {
   console.log("Now playing:", artist, "-", title);
 });
 
-//don't let this process go to sleep
+//don't let this process exit unintentionally
 (function wait () {
    setTimeout(wait, 1000);
 })();
